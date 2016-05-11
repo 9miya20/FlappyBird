@@ -1,6 +1,8 @@
 #include "MainScene.h"
 #include "cocostudio/CocoStudio.h"
 #include "ui/CocosGUI.h"
+#include "CharacterReader.hpp"
+#include "Character.hpp"
 
 USING_NS_CC;
 
@@ -31,12 +33,38 @@ bool MainScene::init()
         return false;
     }
     
+    CSLoader* instance = CSLoader::getInstance();
+    instance->registReaderObject("CharacterReader", (ObjectFactory::Instance) CharacterReader::getInstance);
+    
     auto rootNode = CSLoader::createNode("MainScene.csb");
     Size size = Director::getInstance()->getVisibleSize();
     rootNode->setContentSize(size);
     ui::Helper::doLayout(rootNode);
-
     addChild(rootNode);
+    
+    auto back = rootNode->getChildByName("back");
+    this->character = back->getChildByName<Character*>("character");
 
     return true;
+}
+
+void MainScene::onEnter()
+{
+    Layer::onEnter();
+    
+    this->setupTouchHandling();
+}
+
+void MainScene::setupTouchHandling()
+{
+    auto touchListener = EventListenerTouchOneByOne::create();
+    
+    touchListener->onTouchBegan = [&](Touch* touch, Event* event)
+    {
+        this->character->jump();
+        
+        return true;
+    };
+    
+    this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchListener, this);
 }
