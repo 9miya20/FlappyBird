@@ -34,6 +34,7 @@ void Character::onEnter()
 {
     Node::onEnter();
     
+    this->bird = this->getChildByName("bird");
     this->scheduleUpdate();
 }
 
@@ -53,3 +54,18 @@ void Character::jump()
     
     this->velocity = JUMP_FORCE;
 }
+
+cocos2d::Rect Character::getRect()
+{
+    auto birdContentSize = this->bird->getContentSize() * 0.8f;
+    
+    Rect rect = Rect(this->getPosition().x - birdContentSize.width / 2, this->getPosition().y - birdContentSize.height / 2, birdContentSize.width, birdContentSize.height);
+    
+    /*
+    auto pipeTopRect = this->bird->getBoundingBox();
+    pipeTopRect.origin += pipeTopRect;
+     */
+    
+    return rect;
+}
+

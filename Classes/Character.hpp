@@ -19,6 +19,7 @@ public:
     void onEnter() override;
     void update(float dt) override;
     void jump();
+    cocos2d::Rect getRect();
     
 protected:
     cocostudio::timeline::ActionTimeline* timeline;
@@ -26,6 +27,9 @@ protected:
     bool isStart;
     float velocity;
     float accel;
+    
+private:
+    cocos2d::Node* bird;
 };
 
 

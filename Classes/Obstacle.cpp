@@ -17,11 +17,6 @@ bool Obstacle::init() {
         return false;
     }
 
-    // load the character animation timeline
-    this->timeline = cocos2d::CSLoader::createTimeline("Obstacle.csb");
-    // retain the character animation timeline so it doesn't get deallocated
-    this->timeline->retain();
-
     return true;
 }
 
@@ -32,6 +27,9 @@ bool Obstacle::init() {
 void Obstacle::onEnter()
 {
     Node::onEnter();
+    
+    this->pipe_top = this->getChildByName("pipe_top");
+    this->pipe_bottom =this->getChildByName("pipe_bottom");
 }
 
 void Obstacle::onExit()
@@ -43,4 +41,18 @@ void Obstacle::onExit()
 void Obstacle::moveLeft(float distance)
 {
     this->setPosition(this->getPosition() + Vec2(-distance, 0));
+}
+
+std::vector<cocos2d::Rect> Obstacle::getRects()
+{
+    std::vector<Rect> rects;
+        
+    Rect rect1 = Rect(this->getPosition().x - this->pipe_top->getContentSize().width / 2, this->getPosition().y + this->pipe_top->getPosition().y, this->pipe_top->getContentSize().width, this->pipe_top->getContentSize().height);
+    
+    Rect rect2 = Rect(this->getPosition().x - this->pipe_bottom->getContentSize().width / 2, this->getPosition().y - this->pipe_top->getPosition().y - this->pipe_bottom->getContentSize().height, this->pipe_bottom->getContentSize().width, this->pipe_bottom->getContentSize().height);
+    
+    rects.push_back(rect1);
+    rects.push_back(rect2);
+    
+    return rects;
 }

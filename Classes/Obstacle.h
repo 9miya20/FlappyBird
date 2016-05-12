@@ -17,12 +17,18 @@ public:
     CREATE_FUNC(Obstacle);
     bool init() override;
     void moveLeft(float distance);
+    std::vector<cocos2d::Rect> getRects();
 
 protected:
     cocostudio::timeline::ActionTimeline* timeline;
 
     void onEnter() override;
     void onExit() override;
+    
+private:
+    cocos2d::Node* pipe_top;
+    cocos2d::Node* pipe_bottom;
+    
 
 };
 

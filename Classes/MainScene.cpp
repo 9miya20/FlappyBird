@@ -72,6 +72,20 @@ void MainScene::update(float dt)
     for (auto obstacle : this->obstacles) {
         obstacle->moveLeft(SCROOL_SPEED_X * dt);
     }
+    
+    Rect characterRect = this->character->getRect();
+    for (auto obstacle : this->obstacles) {
+        auto obstacleRects = obstacle->getRects();
+        for (Rect obstacleRect : obstacleRects) {
+            bool hit = characterRect.intersectsRect(obstacleRect);
+            if (hit) {
+                //CCLOG("Hit");
+                this->unscheduleAllCallbacks();
+            } else {
+                //CCLOG("Not Hit");
+            }
+        }
+    }
 }
 
 void MainScene::setupTouchHandling()
