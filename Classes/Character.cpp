@@ -20,6 +20,7 @@ bool Character::init()
     
     this->velocity = 0;
     this->accel = GRAVITY_ACCEL;
+    this->isFlying = false;
     
     // キャラクターのアニメーションのタイムラインを読み込む
     this->timeline = cocos2d::CSLoader::createTimeline("Character.csb");
@@ -40,7 +41,7 @@ void Character::onEnter()
 
 void Character::update(float dt)
 {
-    if (!this->isStart) return;
+    if (!this->isFlying) return;
     
     this->velocity += accel * dt;
     this->setPosition(this->getPosition() + Vec2(0, this->velocity * dt));
@@ -48,11 +49,27 @@ void Character::update(float dt)
 
 void Character::jump()
 {
-    if (!this->isStart) {
-        this->isStart = true;
-    }
-    
     this->velocity = JUMP_FORCE;
+    
+    /*
+    this->stopAllActions();
+    this->runAction(this->timeline);
+    this->timeline->play("chop", false);
+    */
+    
+    /*
+    this->stopAllActions();
+    this->runAction(this->timeline);
+    auto repeat = Repeat::create(CallFunc::create([this]{
+        this->timeline->play("fly", false);
+    }), 3);
+     */
+    
+    this->stopAllActions();
+    this->runAction(this->timeline);
+    this->timeline->play("fly", false);
+    
+    
 }
 
 cocos2d::Rect Character::getRect()
@@ -67,5 +84,9 @@ cocos2d::Rect Character::getRect()
      */
     
     return rect;
+}
+
+void Character::SetIsFlying(bool isFlying){
+    this->isFlying = isFlying;
 }
 

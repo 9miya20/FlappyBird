@@ -64,11 +64,15 @@ void MainScene::onEnter()
     
     this->scheduleUpdate();
     
-    this->schedule(CC_SCHEDULE_SELECTOR(MainScene::createObstacle), OBSTACLE_TIME_SPAN);
+    this->triggerReady();
 }
 
 void MainScene::update(float dt)
 {
+    if (this->gameState != GameState::Playing) {
+        return;
+    }
+    
     for (auto obstacle : this->obstacles) {
         obstacle->moveLeft(SCROOL_SPEED_X * dt);
     }
@@ -80,7 +84,8 @@ void MainScene::update(float dt)
             bool hit = characterRect.intersectsRect(obstacleRect);
             if (hit) {
                 //CCLOG("Hit");
-                this->unscheduleAllCallbacks();
+                //this->unscheduleAllCallbacks();
+                this->triggerGameOver();
             } else {
                 //CCLOG("Not Hit");
             }
@@ -94,7 +99,21 @@ void MainScene::setupTouchHandling()
     
     touchListener->onTouchBegan = [&](Touch* touch, Event* event)
     {
-        this->character->jump();
+        switch (this->gameState) {
+            case::GameState::Title:
+                break;
+            case::GameState::Ready:
+                this->triggerPlaying();
+                break;
+            case::GameState::Playing:
+                this->character->jump();
+                break;
+            case::GameState::GameOver:
+                auto nextGameScene = MainScene::createScene();
+                auto transition = TransitionFade::create(1.0f, nextGameScene);
+                Director::getInstance()->replaceScene(transition);
+                break;
+        }
         
         return true;
     };
@@ -119,3 +138,30 @@ void MainScene::createObstacle(float dt)
     }
     
 }
+
+void MainScene::triggerTitle(){
+    this->gameState = GameState::Title;
+}
+
+void MainScene::triggerGameOver(){
+    this->gameState = GameState::GameOver;
+    
+    this->unschedule(CC_SCHEDULE_SELECTOR(MainScene::createObstacle));
+}
+
+void MainScene::triggerPlaying(){
+    this->gameState = GameState::Playing;
+    this->character->SetIsFlying(true);
+    
+    this->schedule(CC_SCHEDULE_SELECTOR(MainScene::createObstacle), OBSTACLE_TIME_SPAN);
+}
+
+void MainScene::triggerReady(){
+    this->gameState = GameState::Ready;
+    this->character->SetIsFlying(false);
+}
+
+void MainScene::resetGameState(){
+    
+}
+
