@@ -7,6 +7,7 @@
 //
 
 #include "Character.hpp"
+#include "Constants.h"
 
 using namespace cocos2d;
 
@@ -18,7 +19,7 @@ bool Character::init()
     }
     
     this->velocity = 0;
-    this->accel = -1000;
+    this->accel = GRAVITY_ACCEL;
     
     // キャラクターのアニメーションのタイムラインを読み込む
     this->timeline = cocos2d::CSLoader::createTimeline("Character.csb");
@@ -50,5 +51,5 @@ void Character::jump()
         this->isStart = true;
     }
     
-    this->velocity = 300;
+    this->velocity = JUMP_FORCE;
 }

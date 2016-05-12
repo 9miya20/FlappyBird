@@ -3,6 +3,9 @@
 #include "ui/CocosGUI.h"
 #include "CharacterReader.hpp"
 #include "Character.hpp"
+#include "ObstacleReader.h"
+#include "Obstacle.h"
+#include "Constants.h"
 
 USING_NS_CC;
 
@@ -35,6 +38,7 @@ bool MainScene::init()
     
     CSLoader* instance = CSLoader::getInstance();
     instance->registReaderObject("CharacterReader", (ObjectFactory::Instance) CharacterReader::getInstance);
+    instance->registReaderObject("ObstacleReader", (ObjectFactory::Instance) ObstacleReader::getInstance);
     
     auto rootNode = CSLoader::createNode("MainScene.csb");
     Size size = Director::getInstance()->getVisibleSize();
@@ -42,8 +46,12 @@ bool MainScene::init()
     ui::Helper::doLayout(rootNode);
     addChild(rootNode);
     
-    auto back = rootNode->getChildByName("back");
-    this->character = back->getChildByName<Character*>("character");
+    this->background = rootNode->getChildByName("back");
+    this->character = this->background->getChildByName<Character*>("character");
+    this->character->setZOrder(1);
+    
+    auto ground = this->background->getChildByName("ground");
+    ground->setZOrder(1);
 
     return true;
 }
@@ -53,6 +61,17 @@ void MainScene::onEnter()
     Layer::onEnter();
     
     this->setupTouchHandling();
+    
+    this->scheduleUpdate();
+    
+    this->schedule(CC_SCHEDULE_SELECTOR(MainScene::createObstacle), OBSTACLE_TIME_SPAN);
+}
+
+void MainScene::update(float dt)
+{
+    for (auto obstacle : this->obstacles) {
+        obstacle->moveLeft(SCROOL_SPEED_X * dt);
+    }
 }
 
 void MainScene::setupTouchHandling()
@@ -67,4 +86,22 @@ void MainScene::setupTouchHandling()
     };
     
     this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchListener, this);
+}
+
+void MainScene::createObstacle(float dt)
+{
+    Obstacle* obstacle = dynamic_cast<Obstacle*>(CSLoader::createNode("Obstacle.csb"));
+    this->obstacles.pushBack(obstacle);
+
+    this->background->addChild(obstacle);
+    
+    float y = CCRANDOM_0_1() * (OBSTACLE_MAX_Y - OBSTACLE_MIN_Y) + OBSTACLE_MIN_Y;
+    
+    obstacle->setPosition(OBSTACLE_INIT_X, y);
+    
+    if (this->obstacles.size() > OBSTACLE_LIMIT) {
+        this->obstacles.front()->removeFromParent();
+        this->obstacles.erase(this->obstacles.begin());
+    }
+    
 }
