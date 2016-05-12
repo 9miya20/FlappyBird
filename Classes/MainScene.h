@@ -29,12 +29,18 @@ public:
     // implement the "static create()" method manually
     CREATE_FUNC(MainScene);
     
+    std::vector<cocos2d::Rect> getGroundRects();
+    
 protected:
     Character* character;
 
 private:
     cocos2d::Vector<Obstacle*> obstacles;
     cocos2d::Node* background;
+    cocos2d::Node* ground;
+    cocos2d::Sprite* ground1;
+    cocos2d::Sprite* ground2;
+    cocos2d::Vector<cocos2d::Sprite*> grounds;
     GameState gameState;
     
     void setupTouchHandling();

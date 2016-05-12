@@ -47,11 +47,17 @@ bool MainScene::init()
     addChild(rootNode);
     
     this->background = rootNode->getChildByName("back");
+    
     this->character = this->background->getChildByName<Character*>("character");
     this->character->setZOrder(1);
     
-    auto ground = this->background->getChildByName("ground");
-    ground->setZOrder(1);
+    this->ground = this->background->getChildByName("groundNode");
+    this->ground->setZOrder(1);
+    
+    this->ground1 = this->ground->getChildByName<Sprite*>("ground1");
+    this->ground2 = this->ground->getChildByName<Sprite*>("ground2");
+    this->grounds.pushBack(ground1);
+    this->grounds.pushBack(ground2);
 
     return true;
 }
@@ -77,14 +83,36 @@ void MainScene::update(float dt)
         obstacle->moveLeft(SCROOL_SPEED_X * dt);
     }
     
+    this->ground1->setPosition(this->ground1->getPosition() + Vec2(-SCROOL_SPEED_X * dt, 0));
+    this->ground2->setPosition(this->ground2->getPosition() + Vec2(-SCROOL_SPEED_X * dt, 0));
+    if (this->grounds.back()->getPosition().x <= 0) {
+        this->grounds.front()->setPositionX(this->grounds.back()->getPosition().x + this->grounds.front()->getContentSize().width);
+        
+        grounds.swap(this->grounds.front(), this->grounds.back());
+    }
+    
     Rect characterRect = this->character->getRect();
     for (auto obstacle : this->obstacles) {
         auto obstacleRects = obstacle->getRects();
+        
         for (Rect obstacleRect : obstacleRects) {
             bool hit = characterRect.intersectsRect(obstacleRect);
             if (hit) {
                 //CCLOG("Hit");
                 //this->unscheduleAllCallbacks();
+                this->triggerGameOver();
+            } else {
+                //CCLOG("Not Hit");
+            }
+        }
+    }
+    
+    for (auto ground : this->grounds) {
+        auto groundRects = this->getGroundRects();
+        
+        for (Rect groundRect : groundRects) {
+            bool hit = characterRect.intersectsRect(groundRect);
+            if (hit) {
                 this->triggerGameOver();
             } else {
                 //CCLOG("Not Hit");
@@ -163,5 +191,19 @@ void MainScene::triggerReady(){
 
 void MainScene::resetGameState(){
     
+}
+
+std::vector<cocos2d::Rect> MainScene::getGroundRects()
+{
+    std::vector<Rect> rects;
+    
+    Rect rect1 = Rect(this->ground1->getPosition().x, 0, this->ground1->getContentSize().width, this->ground1->getContentSize().height);
+    
+    Rect rect2 = Rect(this->ground2->getPosition().x, 0, this->ground2->getContentSize().width, this->ground2->getContentSize().height);
+    
+    rects.push_back(rect1);
+    rects.push_back(rect2);
+    
+    return rects;
 }
 
