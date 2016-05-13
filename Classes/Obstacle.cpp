@@ -46,10 +46,16 @@ void Obstacle::moveLeft(float distance)
 std::vector<cocos2d::Rect> Obstacle::getRects()
 {
     std::vector<Rect> rects;
-        
+    
+    /*
     Rect rect1 = Rect(this->getPosition().x - this->pipe_top->getContentSize().width / 2, this->getPosition().y + this->pipe_top->getPosition().y, this->pipe_top->getContentSize().width, this->pipe_top->getContentSize().height);
     
     Rect rect2 = Rect(this->getPosition().x - this->pipe_bottom->getContentSize().width / 2, this->getPosition().y - this->pipe_top->getPosition().y - this->pipe_bottom->getContentSize().height, this->pipe_bottom->getContentSize().width, this->pipe_bottom->getContentSize().height);
+     */
+    
+    Rect rect1 = Rect(this->getPosition().x, this->getPosition().y + this->pipe_top->getPosition().y, this->pipe_top->getContentSize().width, this->pipe_top->getContentSize().height);
+    
+    Rect rect2 = Rect(this->getPosition().x, this->getPosition().y - this->pipe_top->getPosition().y - this->pipe_bottom->getContentSize().height, this->pipe_bottom->getContentSize().width, this->pipe_bottom->getContentSize().height);
     
     rects.push_back(rect1);
     rects.push_back(rect2);

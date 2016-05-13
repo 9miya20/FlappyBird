@@ -49,10 +49,14 @@ bool MainScene::init()
     this->background = rootNode->getChildByName("back");
     
     this->character = this->background->getChildByName<Character*>("character");
-    this->character->setZOrder(1);
+    this->character->setLocalZOrder(1);
     
     this->ground = this->background->getChildByName("groundNode");
-    this->ground->setZOrder(1);
+    this->ground->setLocalZOrder(1);
+    
+    this->scoreLabel = this->background->getChildByName<cocos2d::ui::TextBMFont*>("scoreLabel");
+    this->scoreLabel->setLocalZOrder(3);
+    this->scoreLabel->setString("0");
     
     this->ground1 = this->ground->getChildByName<Sprite*>("ground1");
     this->ground2 = this->ground->getChildByName<Sprite*>("ground2");
@@ -107,16 +111,25 @@ void MainScene::update(float dt)
         }
     }
     
-    for (auto ground : this->grounds) {
+    //for (auto ground : this->grounds) {
         auto groundRects = this->getGroundRects();
         
         for (Rect groundRect : groundRects) {
             bool hit = characterRect.intersectsRect(groundRect);
             if (hit) {
+                this->character->setPositionY(this->ground1->getContentSize().height + this->character->getContentSize().height * 2);
                 this->triggerGameOver();
             } else {
                 //CCLOG("Not Hit");
             }
+        }
+    //}
+    
+    for (auto obstacle : this->obstacles) {
+        float currentX = obstacle->getPositionX();
+        float lastX = currentX - SCROOL_SPEED_X * dt;
+        if (currentX >= this->character->getPositionX() && this->character->getPositionX() > lastX){
+            this->SetScore(this->score + 1);
         }
     }
 }
@@ -173,7 +186,7 @@ void MainScene::triggerTitle(){
 
 void MainScene::triggerGameOver(){
     this->gameState = GameState::GameOver;
-    
+    this->character->SetIsFlying(false);
     this->unschedule(CC_SCHEDULE_SELECTOR(MainScene::createObstacle));
 }
 
@@ -186,6 +199,7 @@ void MainScene::triggerPlaying(){
 
 void MainScene::triggerReady(){
     this->gameState = GameState::Ready;
+    this->SetScore(0);
     this->character->SetIsFlying(false);
 }
 
@@ -205,5 +219,11 @@ std::vector<cocos2d::Rect> MainScene::getGroundRects()
     rects.push_back(rect2);
     
     return rects;
+}
+
+void MainScene::SetScore(int score)
+{
+    this->score = score;
+    this->scoreLabel->setString(std::to_string(score));
 }
 

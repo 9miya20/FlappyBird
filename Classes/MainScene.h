@@ -2,10 +2,11 @@
 #define __MainScene_SCENE_H__
 
 #include "cocos2d.h"
+#include "Obstacle.h"
+#include "ui/CocosGUI.h"
 
 class Character;
 
-#include "Obstacle.h"
 
 enum class GameState
 {
@@ -42,6 +43,8 @@ private:
     cocos2d::Sprite* ground2;
     cocos2d::Vector<cocos2d::Sprite*> grounds;
     GameState gameState;
+    cocos2d::ui::TextBMFont* scoreLabel;
+    int score;
     
     void setupTouchHandling();
     void createObstacle(float dt);
@@ -51,6 +54,7 @@ private:
     void triggerPlaying();
     void triggerReady();
     void resetGameState();
+    void SetScore(int score);
 };
 
 #endif // __MainScene_SCENE_H__

@@ -22,6 +22,7 @@ public:
     cocos2d::Rect getRect();
     
     void SetIsFlying(bool isFlying);
+    void SetVelocity(float velocity);
     
 protected:
     cocostudio::timeline::ActionTimeline* timeline;

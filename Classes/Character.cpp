@@ -90,3 +90,8 @@ void Character::SetIsFlying(bool isFlying){
     this->isFlying = isFlying;
 }
 
+void Character::SetVelocity(float velocity){
+    this->velocity = velocity;
+}
+
+

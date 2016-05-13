@@ -42,6 +42,16 @@
                 <PrePosition />
                 <PreSize X="0.0000" Y="0.0000" />
               </AbstractNodeData>
+              <AbstractNodeData Name="scoreLabel" ActionTag="1619972471" Tag="34" IconVisible="False" PositionPercentXEnabled="True" LeftMargin="132.0000" RightMargin="132.0000" TopMargin="61.0000" BottomMargin="397.0000" LabelText="0" ctype="TextBMFontObjectData">
+                <Size X="24.0000" Y="54.0000" />
+                <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+                <Position X="144.0000" Y="424.0000" />
+                <Scale ScaleX="1.0000" ScaleY="1.0000" />
+                <CColor A="255" R="255" G="255" B="255" />
+                <PrePosition X="0.5000" Y="0.8281" />
+                <PreSize X="0.0833" Y="0.1055" />
+                <LabelBMFontFile_CNB Type="Normal" Path="Assets/font/font1.fnt" Plist="" />
+              </AbstractNodeData>
               <AbstractNodeData Name="character" ActionTag="486573395" Tag="6" IconVisible="True" LeftMargin="89.0000" RightMargin="199.0000" TopMargin="258.0000" BottomMargin="254.0000" StretchWidthEnable="False" StretchHeightEnable="False" InnerActionSpeed="1.0000" CustomSizeEnabled="False" ctype="ProjectNodeObjectData">
                 <Size X="0.0000" Y="0.0000" />
                 <AnchorPoint />
